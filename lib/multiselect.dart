@@ -97,9 +97,8 @@ class _DropDownMultiSelectState extends State<DropDownMultiSelect> {
                           EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                       child: Text(widget.selectedValues.length > 0
                           ? widget.selectedValues
-                              .reduce(
-                                  (a, b) => a.toString() + ' , ' + b.toString())
-                              .toString()
+                              .map((e) => e.toString())
+                              .reduce((a, b) => a + ' , ' + b)
                           : widget.whenEmpty ?? '')),
                   alignment: Alignment.centerLeft)),
           Align(
