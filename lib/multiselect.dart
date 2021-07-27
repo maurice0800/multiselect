@@ -66,6 +66,8 @@ class DropDownMultiSelect extends StatefulWidget {
   /// a function to build custom menu items
   final Widget Function(dynamic option)? menuItembuilder;
 
+  final String Function(dynamic option)? getString;
+
   const DropDownMultiSelect({
     Key? key,
     required this.options,
@@ -77,6 +79,7 @@ class DropDownMultiSelect extends StatefulWidget {
     this.isDense = false,
     this.enabled = true,
     this.decoration,
+    this.getString,
   }) : super(key: key);
   @override
   _DropDownMultiSelectState createState() => _DropDownMultiSelectState();
@@ -96,9 +99,13 @@ class _DropDownMultiSelectState extends State<DropDownMultiSelect> {
                       padding:
                           EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                       child: Text(widget.selectedValues.length > 0
-                          ? widget.selectedValues
-                              .map((e) => e.toString())
-                              .reduce((a, b) => a + ' , ' + b)
+                          ? widget.selectedValues.map((e) {
+                              if (widget.getString != null) {
+                                return widget.getString!(e);
+                              } else {
+                                return e.toString();
+                              }
+                            }).reduce((a, b) => a + ' , ' + b)
                           : widget.whenEmpty ?? '')),
                   alignment: Alignment.centerLeft)),
           Align(
@@ -131,7 +138,9 @@ class _DropDownMultiSelectState extends State<DropDownMultiSelect> {
                               ? widget.menuItembuilder!(x)
                               : _SelectRow(
                                   selected: widget.selectedValues.contains(x),
-                                  text: x.toString(),
+                                  text: widget.getString != null
+                                      ? widget.getString!(x)
+                                      : x.toString(),
                                   onChange: (isSelected) {
                                     if (isSelected) {
                                       var ns = widget.selectedValues;
